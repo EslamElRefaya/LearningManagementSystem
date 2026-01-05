@@ -1,6 +1,6 @@
 using LearningManagementSystem.Domain.Events;
 
-namespace Learning_Management_System.Domain.DomainEvents
+namespace LearningManagementSystem.Domain.DomainEvents
 {
     public class CertificateIssuedEvent : IDomainEvent
     {
