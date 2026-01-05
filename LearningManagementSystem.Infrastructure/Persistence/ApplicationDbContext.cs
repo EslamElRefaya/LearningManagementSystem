@@ -1,12 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LearningManagementSystem.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace LearningManagementSystem.Infrastructure.Persistence
 {
-    class ApplicationDbContext
+    public class ApplicationDbContext : DbContext
     {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
+        // DbSets for your entities go here
+        public DbSet<User> Users { get; set; }
+        public DbSet<Submission> Submissions { get; set; }
+        public DbSet<Quiz> Quizzes { get; set; }
+        public DbSet<Question> Questions { get; set; }
+        public DbSet<Lesson> lessons { get; set; }
+        public DbSet<Instractor> Instractors { get; set; }
+        public DbSet<Enrollment> Enrollments { get; set; }
+        public DbSet<Course> Courses { get; set; }
+        public DbSet<Certificate> Certificates { get; set; }
+        public DbSet<Assignment> Assignments { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>(b =>
+            {
+                b.OwnsOne(u => u.Email, email =>
+                {
+                    email.Property(x => x.Value)
+                     .HasColumnName("Email")
+                     .IsRequired();
+                });
+            });
+
+            modelBuilder.Entity<Course>(b =>
+            {
+                b.OwnsOne(c => c.CoursePrice, price =>
+                {
+                    price.Property(x => x.Amount).HasColumnType("decimal(6,2)");
+                    price.Property(x => x.Currency).HasMaxLength(3);
+                });
+            });
+        }
     }
 }

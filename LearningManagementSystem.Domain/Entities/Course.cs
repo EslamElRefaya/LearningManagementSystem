@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using LearningManagementSystem.Domain.Common;
 using LearningManagementSystem.Domain.DomainEvents;
 using LearningManagementSystem.Domain.Enums;
@@ -8,13 +9,14 @@ namespace LearningManagementSystem.Domain.Entities
 {
     public class Course : AuditableEntity
     {
-       
+        [MaxLength(250)]
         public string Title { get; set; } = string.Empty;
+        [MaxLength(500)]
         public string Description { get; set; } = string.Empty;
         public CourseStatus Status { get; set; } = CourseStatus.Draft;
         public Money CoursePrice { get; private set; } = null!;
 
-        public int InstractorId { get; set; }
+        public Guid InstractorId { get; set; }
         public Instractor Instractor { get; set; }=default!;
 
         public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
