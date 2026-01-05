@@ -15,7 +15,6 @@
     <Folder Include="Interfaces\Repositories\" />
     <Folder Include="Interfaces\Services\" />
     <Folder Include="Entities\" />
-    <Folder Include="Common\" />
   </ItemGroup>
 
 </Project>
