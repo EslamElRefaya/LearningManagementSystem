@@ -7,11 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Features_CQRS\" />
+    <Folder Include="Features_CQRS\Course\Commands\DeleteCourse\" />
+    <Folder Include="Features_CQRS\Course\Commands\PublishCourse\" />
+    <Folder Include="Features_CQRS\Course\Commands\UpdateCourse\" />
+    <Folder Include="Features_CQRS\Course\Queries\" />
     <Folder Include="Validators\" />
     <Folder Include="Interfaces\Services\" />
     <Folder Include="Interfaces\Identity\" />
     <Folder Include="DTOs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="14.0.0" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,6 @@
+using LearningManagementSystem.Domain.Interfaces.Repositories;
 using LearningManagementSystem.Infrastructure.Persistence;
+using LearningManagementSystem.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +16,9 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlServer(connectionString));
 #endregion
-
+#region Add Inject Repository 
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+#endregion
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

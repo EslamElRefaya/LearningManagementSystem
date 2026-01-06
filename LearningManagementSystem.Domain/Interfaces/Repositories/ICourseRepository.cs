@@ -6,8 +6,8 @@ namespace LearningManagementSystem.Domain.Interfaces.Repositories
    public interface ICourseRepository: IBaseRepository<Course>
     {
         Task PublishCourseAsync(Guid courseId);
-        Task<Course> GetCourseByTitleAsync(string title);
-        Task<Course> GetCourseByInstractorAsync(Guid instractorId);
+        Task<Course?> GetCourseByTitleAsync(string title);
+        Task<Course?> GetCourseByInstractorAsync(Guid instractorId);
         Task<List<Course>> GetCoursesByStatusAsync(CourseStatus status); 
     }
 }
