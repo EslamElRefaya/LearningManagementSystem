@@ -1,37 +1,59 @@
+using LearningManagementSystem.Application.Features_CQRS.Courses.Commands.CreateCourse;
 using LearningManagementSystem.Domain.Interfaces.Repositories;
 using LearningManagementSystem.Infrastructure.Persistence;
 using LearningManagementSystem.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
+using LearningManagementSystem.Application.Mapping;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-#region  4-- Add connection string or Add 'DbContext'
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlServer(connectionString));
-#endregion
-#region Add Inject Repository 
-builder.Services.AddScoped<ICourseRepository, CourseRepository>();
-#endregion
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+internal class Program
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    private static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+
+        // Add services to the container.
+
+        builder.Services.AddControllers();
+        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+
+        #region  4-- Add connection string or Add 'DbContext'
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlServer(connectionString));
+        #endregion
+
+        builder.Services.AddMediatR(config =>
+        {
+            config.RegisterServicesFromAssemblies(
+                typeof(Program).Assembly,
+                typeof(CreateCourseHandler).Assembly
+                );
+        });
+        #region  resgistr
+        CourseMapping.Register();
+        #endregion
+        #region Add Inject Repository 
+        builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+        #endregion
+        var app = builder.Build();
+
+        // Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
+
+        app.UseHttpsRedirection();
+
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+        app.Run();
+    }
 }
 
-app.UseHttpsRedirection();
 
-app.UseAuthorization();
 
-app.MapControllers();
-
-app.Run();

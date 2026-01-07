@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LearningManagementSystem.Application\LearningManagementSystem.Application.csproj" />
     <ProjectReference Include="..\LearningManagementSystem.Infrastructure\LearningManagementSystem.Infrastructure.csproj" />
   </ItemGroup>
 

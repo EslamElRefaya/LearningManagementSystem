@@ -15,11 +15,15 @@ namespace LearningManagementSystem.Infrastructure.Persistence.Repositories
         }
         public async Task<List<Course>> GetAllAsync()
         {
-            return await _context.Courses.ToListAsync();
+            return await _context.Courses
+                .Include(c=>c.Instractor)
+                .ToListAsync();
         }
         public async Task<Course?> GetByIdAsync(Guid id)
         {
-            return await _context.Courses.SingleOrDefaultAsync(c => c.Id == id);
+            return await _context.Courses
+                .Include(c=>c.Instractor)
+                .SingleOrDefaultAsync(c => c.Id == id);
         }
         public async Task AddAsync(Course course)
         {
