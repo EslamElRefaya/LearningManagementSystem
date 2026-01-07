@@ -33,9 +33,9 @@ namespace LearningManagementSystem.Api.Controllers
         }
         // POST: api/Courses
         [HttpPost]
-        public async Task<IActionResult> CreateCourseAsync([FromBody] CreateCourseCommand createCourseCommand)
+        public async Task<IActionResult> CreateCourseAsync([FromBody] CreateCourseDto createCourseDto)
         {
-            var courseId = await _mediator.Send(createCourseCommand);
+            var courseId = await _mediator.Send(createCourseDto);
             return Ok(courseId);
         }
         [HttpPut("{courseId}")]
