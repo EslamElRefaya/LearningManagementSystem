@@ -10,7 +10,6 @@
     <Folder Include="Services\" />
     <Folder Include="BackgroundJobs\" />
     <Folder Include="Persistence\Configurations\" />
-    <Folder Include="Persistence\Repositories\" />
     <Folder Include="Identity\" />
   </ItemGroup>
 
