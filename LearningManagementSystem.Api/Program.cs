@@ -5,6 +5,7 @@ using LearningManagementSystem.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using LearningManagementSystem.Application.Mapping;
 using LearningManagementSystem.Application.Features_CQRS.Instractors.Commands.CreateInstractor;
+using LearningManagementSystem.Application.DependencyInjection;
 
 internal class Program
 {
@@ -32,9 +33,8 @@ internal class Program
                 //typeof(CreateInstractorHandler).Assembly
                 );
         });
-        #region  resgistr
-        CourseMapping.Register();
-        InstractorMapping.Register();
+        #region  resgistr Mapster
+        builder.Services.AddApplicationServices();
         #endregion
         #region Add Inject Repository 
         builder.Services.AddScoped<ICourseRepository, CourseRepository>();
