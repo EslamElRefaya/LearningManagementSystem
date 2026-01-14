@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Features_CQRS\Users\Commands\DeleteUser\" />
+    <Folder Include="Features_CQRS\Users\Commands\UpdateUser\" />
+    <Folder Include="Features_CQRS\Users\Queries\GetAllUsers\" />
+    <Folder Include="Features_CQRS\Users\Queries\GetUserByRole\" />
+    <Folder Include="Features_CQRS\Users\Queries\GetUserById\" />
     <Folder Include="Validators\" />
     <Folder Include="Validators\" />
     <Folder Include="Interfaces\Services\" />

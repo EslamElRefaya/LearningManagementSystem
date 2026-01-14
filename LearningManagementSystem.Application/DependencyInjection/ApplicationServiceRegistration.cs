@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using Mapster;
 using LearningManagementSystem.Application.Mapping;
 
 namespace LearningManagementSystem.Application.DependencyInjection
@@ -12,7 +11,7 @@ namespace LearningManagementSystem.Application.DependencyInjection
             // Mapster
             CourseMapping.Register();
             InstractorMapping.Register();
-            //UserMapping.Register();
+            UserMapping.Register();
 
             return services;
         }
