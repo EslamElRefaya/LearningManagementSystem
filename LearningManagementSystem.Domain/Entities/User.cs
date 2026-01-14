@@ -16,8 +16,22 @@ namespace LearningManagementSystem.Domain.Entities
         [MaxLength(50)]
         public string Phone { get; set; } = string.Empty;
         public UserRole Role { get; set; } = UserRole.Student;
-
+        
         public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
         public ICollection<Submission> Submissions { get; set; } = new List<Submission>();
+       //initial contractor
+        private User() { }
+
+        public User(string fullname,Email email, string password, string username, string phone, UserRole userRole)
+        {
+            FullName = fullname;
+            Email = email;
+            Password = password;
+            UserName = username;
+            Phone = phone;
+            Role = userRole;
+        }
+
+
     }
 }

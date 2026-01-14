@@ -24,7 +24,7 @@ namespace LearningManagementSystem.Domain.Entities
         public ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();
 
         private Course() { } // EF Core
-
+      
         public static Course Create(string title, string description, decimal price, string currency, Guid instructorId)
         {
             return new Course

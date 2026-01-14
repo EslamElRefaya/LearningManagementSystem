@@ -39,6 +39,7 @@ internal class Program
         #region Add Inject Repository 
         builder.Services.AddScoped<ICourseRepository, CourseRepository>();
         builder.Services.AddScoped<IInstractorRepository, InstractorRepository>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
         #endregion
         var app = builder.Build();
 
