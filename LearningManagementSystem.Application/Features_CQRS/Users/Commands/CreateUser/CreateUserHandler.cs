@@ -1,8 +1,7 @@
-using LearningManagementSystem.Application.DTOs.Users;
+﻿using LearningManagementSystem.Application.DTOs.Users;
 using LearningManagementSystem.Domain.Entities;
 using LearningManagementSystem.Domain.Enums;
 using LearningManagementSystem.Domain.Interfaces.Repositories;
-using LearningManagementSystem.Domain.ValueObjects;
 using Mapster;
 using MediatR;
 
@@ -11,29 +10,34 @@ namespace LearningManagementSystem.Application.Features_CQRS.Users.Commands.Crea
     public class CreateUserHandler : IRequestHandler<CreateUserCommand, DetailsUserDto>
     {
         private readonly IUserRepository _userRepository;
-        
+
         public CreateUserHandler(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
+
         public async Task<DetailsUserDto> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            //create objects value for email
-            var email = new Email(request.email);
-            var user = new User
-                (
-                    request.fullName,
-                    email,
-                    request.password,
-                    request.userName,
-                    request.phone,
-                    request.role
-                );
-           await _userRepository.AddAsync(user);
+            // ✅ استخدم الاسم الصحيح من Command
+            var dto = request.createUserDto;
 
-            var userdto= user.Adapt<DetailsUserDto>();
-            return userdto;
+            // 1️⃣ إنشاء User (بدون constructor مباشر)
+            var user = User.Create(
+                fullName: dto.FullName,
+                email: dto.Email,
+                password: dto.Password,
+                userName: dto.UserName,
+                phone: dto.Phone,
+                role: (UserRole)dto.Role
+            );
 
+            // 2️⃣ حفظ في Repository
+            await _userRepository.AddAsync(user);
+
+            // 3️⃣ تحويل Domain → DTO باستخدام Mapster
+            var userDto = user.Adapt<DetailsUserDto>();
+
+            return userDto;
         }
     }
 }
