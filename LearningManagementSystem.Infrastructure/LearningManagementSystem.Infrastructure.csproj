@@ -11,13 +11,12 @@
     <Folder Include="Services\" />
     <Folder Include="BackgroundJobs\" />
     <Folder Include="Persistence\Configurations\" />
-    <Folder Include="Identity\" />
-    <Folder Include="Identity\" />
     <Folder Include="BackgroundJobs\" />
     <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
