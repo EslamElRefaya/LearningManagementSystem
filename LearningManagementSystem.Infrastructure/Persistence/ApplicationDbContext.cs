@@ -26,15 +26,6 @@ namespace LearningManagementSystem.Infrastructure.Persistence
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>(b =>
-            {
-                b.OwnsOne(u => u.Email, email =>
-                {
-                    email.Property(x => x.Value)
-                     .HasColumnName("Email")
-                     .IsRequired();
-                });
-            });
 
             modelBuilder.Entity<Course>(b =>
             {

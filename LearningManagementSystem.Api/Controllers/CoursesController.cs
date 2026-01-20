@@ -2,6 +2,7 @@ using LearningManagementSystem.Application.Features_CQRS.Courses.Commands.Publis
 using LearningManagementSystem.Application.Features_CQRS.Courses.Queries.GetAllCourse;
 using LearningManagementSystem.Application.Features_CQRS.Courses.Queries.GetCourseById;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearningManagementSystem.Api.Controllers
@@ -16,7 +17,7 @@ namespace LearningManagementSystem.Api.Controllers
         {
             _mediator = mediator;
         }
-
+        [Authorize(Roles = "Student")]
         [HttpGet]
         public async Task<IActionResult> GetAllCoursesAsync()
         {

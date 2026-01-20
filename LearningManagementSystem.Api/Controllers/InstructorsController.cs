@@ -6,11 +6,13 @@ using LearningManagementSystem.Application.Features_CQRS.Instractors.Queries.Get
 using LearningManagementSystem.Application.Features_CQRS.Instractors.Queries.GetInstractorById;
 using LearningManagementSystem.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearningManagementSystem.Api.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class InstructorsController : ControllerBase
