@@ -1,9 +1,11 @@
 using LearningManagementSystem.Domain.Entities;
+using LearningManagementSystem.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace LearningManagementSystem.Infrastructure.Persistence
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -24,15 +26,6 @@ namespace LearningManagementSystem.Infrastructure.Persistence
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>(b =>
-            {
-                b.OwnsOne(u => u.Email, email =>
-                {
-                    email.Property(x => x.Value)
-                     .HasColumnName("Email")
-                     .IsRequired();
-                });
-            });
 
             modelBuilder.Entity<Course>(b =>
             {

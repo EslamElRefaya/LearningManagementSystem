@@ -5,17 +5,8 @@ using MediatR;
 
 namespace LearningManagementSystem.Application.Features_CQRS.Users.Queries.GetUserById
 {
-    public class GetUserByIdHandler : IRequestHandler<GetUserByIdQuery, DetailsUserDto>
+    public class GetUserByIdHandler
     {
-        private readonly IUserRepository _userRepository;
-        public GetUserByIdHandler(IUserRepository userRepository) => _userRepository = userRepository;
-
-        public async Task<DetailsUserDto> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
-        {
-            var user = await _userRepository.GetByIdAsync(request.UserId);
-            if (user == null) return null;
-
-            return user.Adapt<DetailsUserDto>();
-        }
+       
     }
 }

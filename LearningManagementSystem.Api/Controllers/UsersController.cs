@@ -1,6 +1,6 @@
 using LearningManagementSystem.Application.DTOs.Users;
-using LearningManagementSystem.Application.Features_CQRS.Users.Commands.CreateUser;
 using LearningManagementSystem.Application.Features_CQRS.Users.Commands.DeleteUser;
+using LearningManagementSystem.Application.Features_CQRS.Users.Commands.Login;
 using LearningManagementSystem.Application.Features_CQRS.Users.Commands.UpdateUser;
 using LearningManagementSystem.Application.Features_CQRS.Users.Queries.GetAllUsers;
 using LearningManagementSystem.Application.Features_CQRS.Users.Queries.GetUserById;
@@ -14,45 +14,45 @@ namespace LearningManagementSystem.Api.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IMediator _mediator;
-
         public UsersController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<DetailsUserDto>>> GetAll()
-        => Ok(await _mediator.Send(new GetAllUsersQuery()));
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<DetailsUserDto>> GetById(Guid id)
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(CreateUserCommand createUserCommand)
         {
-            var user = await _mediator.Send(new GetUserByIdQuery { UserId = id });
-
-            if (user == null)
-                return NotFound("User not found" );
-
+            var user = await _mediator.Send(createUserCommand);
             return Ok(user);
         }
-
-        [HttpPost]
-        public async Task<ActionResult<DetailsUserDto>> Create([FromBody] CreateUpdateUserDto createUserDto)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginUserCommand command)
         {
-            var userDto = await _mediator.Send(new CreateUserCommand(createUserDto));
-            return Ok(userDto);
+            var token = await _mediator.Send(command);
+            return Ok(new { token });
         }
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] CreateUpdateUserDto updateUserDto)
+        public async Task<IActionResult> Update(Guid id, UpdateUserCommand command)
         {
-            var userdto= await _mediator.Send(new UpdateUserCommand ( userId: id, updateUserDto: updateUserDto));
-            return Ok(userdto);
+            if (id != command.UserId)
+                return BadRequest("Id mismatch");
+
+            var result = await _mediator.Send(command);
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-          var userdto=  await _mediator.Send(new DeleteUserCommand (UserId: id));
-            return Ok(userdto);
+            await _mediator.Send(new DeleteUserCommand(id));
+            return Ok("delete is successed");
+        }
+        [HttpPut("role")]
+        public async Task<IActionResult> AddOrUpdateRole(AddOrUpdateUserRoleCommand command)
+        {
+            var roles = await _mediator.Send(command);
+            return Ok(roles);
         }
     }
 }

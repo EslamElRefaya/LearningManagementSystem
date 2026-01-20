@@ -9,15 +9,12 @@ namespace LearningManagementSystem.Application.Mapping
         public static void Register()
         {
             // Create / Update DTO → Domain
-            TypeAdapterConfig<CreateUpdateUserDto, User>.NewConfig()
-                .Ignore(dest => dest.Email);
+            TypeAdapterConfig<CreateUpdateUserDto, User>.NewConfig();
 
 
             // Domain → Details DTO
             TypeAdapterConfig<User, DetailsUserDto>.NewConfig()
-                .Map(dest => dest.UserId, src => src.Id)
-                .Map(dest => dest.Email, src => src.Email.Value)
-                .Map(dest => dest.RoleName, src => src.Role);
+                .Map(dest => dest.UserId, src => src.Id);
         }
     }
 }
