@@ -15,13 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Middlewares\" />
     <Folder Include="Models\" />
     <Folder Include="Filters\" />
     <Folder Include="Extensions\" />
     <Folder Include="Filters\" />
     <Folder Include="Models\" />
-    <Folder Include="Middlewares\" />
     <Folder Include="Extensions\" />
   </ItemGroup>
 

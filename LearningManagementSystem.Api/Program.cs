@@ -1,3 +1,4 @@
+using LearningManagementSystem.Api.Middlewares;
 using LearningManagementSystem.Application.DependencyInjection;
 using LearningManagementSystem.Application.Features_CQRS.Courses.Commands.CreateCourse;
 using LearningManagementSystem.Application.Interfaces;
@@ -58,6 +59,7 @@ builder.Services.AddMediatR(config =>
 #region  resgistr Mapster
 builder.Services.AddApplicationServices();
 #endregion
+
 #region Add Inject Repository 
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IInstractorRepository, InstractorRepository>();
@@ -80,6 +82,10 @@ app.UseHttpsRedirection();
 // this P-->> 3
 //CORS
 app.UseCors("AllowAll");
+
+//Global Exception Middleware
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
 // this P-->> 4
 app.UseAuthentication();
 

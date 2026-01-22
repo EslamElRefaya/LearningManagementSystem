@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LearningManagementSystem.Application.DTOs.Instractors;
-using LearningManagementSystem.Domain.Entities;
 using LearningManagementSystem.Domain.Interfaces.Repositories;
 using MediatR;
 
@@ -20,8 +13,13 @@ namespace LearningManagementSystem.Application.Features_CQRS.Instractors.Command
         }
         public async Task<Unit> Handle(UpdateInstractorCommand request, CancellationToken cancellationToken)
         {
-            var instractor = await _instractorRepository.GetByIdAsync(request.instractorId);
+            if(request.createAndUpdateInstractorDto == null)
+                throw new ArgumentException("Instractor data is required");
 
+            var instractor = await _instractorRepository.GetByIdAsync(request.instractorId);
+            if (instractor == null)
+                throw new KeyNotFoundException($"Instractor with id {request.instractorId} not found");
+            
             instractor.FullName = request.createAndUpdateInstractorDto.FullName;
             instractor.Degree = request.createAndUpdateInstractorDto.Degree;
             instractor.Certificates = request.createAndUpdateInstractorDto.Certificates;

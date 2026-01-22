@@ -20,6 +20,9 @@ namespace LearningManagementSystem.Application.Features_CQRS.Instractors.Command
 
         public async Task<Guid> Handle(CreateInstractorCommand request, CancellationToken cancellationToken)
         {
+            if (request ==null)
+                throw new ArgumentException("instractor is requerd");
+           
             var dto=request.createAndUpdateInstractorDto;
             var instractor = new Instractor
             { 
