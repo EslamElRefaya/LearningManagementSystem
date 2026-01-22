@@ -4,15 +4,12 @@ using LearningManagementSystem.Application.Features_CQRS.Instractors.Commands.De
 using LearningManagementSystem.Application.Features_CQRS.Instractors.Commands.UpdateInstractor;
 using LearningManagementSystem.Application.Features_CQRS.Instractors.Queries.GetAllInstractor;
 using LearningManagementSystem.Application.Features_CQRS.Instractors.Queries.GetInstractorById;
-using LearningManagementSystem.Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearningManagementSystem.Api.Controllers
 {
-    [Authorize(Roles = "Admin")]
+   // [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class InstructorsController : ControllerBase
