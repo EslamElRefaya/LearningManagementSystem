@@ -1,49 +1,43 @@
-﻿using LearningManagementSystem.Application.Interfaces;
-using LearningManagementSystem.Domain.Entities;
-using LearningManagementSystem.Infrastructure.Identity;
+using LearningManagementSystem.Domain.Interfaces.Repositories;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 
 namespace LearningManagementSystem.Application.Features_CQRS.Users.Commands.UpdateUser
 {
-    public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, User>
+    public class UpdateUserHandler : IRequestHandler<UpdateUserCommand, Unit>
     {
-        private readonly IUserRepository _userRepository;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateUserCommandHandler(IUserRepository userRepository,
-                                        UserManager<ApplicationUser> userManager)
+        public UpdateUserHandler(IUnitOfWork unitOfWork)
         {
-            _userRepository = userRepository;
-            _userManager = userManager;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<User> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
-            // 1️ get Domain User
-            var user = await _userRepository.GetDomainUserById(request.UserId);
-            if (user == null)
-                throw new Exception("User not found");
+            await _unitOfWork.BeginTransactionAsync();
 
-            // 2️ update  Domain User
-            user.FullName = request.FullName;
-            await _userRepository.UpdateUserAsync(user);
-
-            // 3️ update  ApplicationUser
-            var appUser = await _userManager.FindByIdAsync(user.Id.ToString());
-            if (appUser != null)
+            try
             {
-                appUser.UserName = request.UserName;
-                appUser.Email = request.Email;
-                appUser.PhoneNumber = request.PhoneNumber;
+                await _unitOfWork.Users.UpdateUserAsync(
+                          request.UserId,
+                          request.updateUserDto.FullName,
+                          request.updateUserDto.Email,
+                          request.updateUserDto.UserName,
+                          request.updateUserDto.Password,
+                          request.updateUserDto.Phone,
+                          request.updateUserDto.Role
+                    );
 
-                var result = await _userManager.UpdateAsync(appUser);
-                if (!result.Succeeded)
-                    throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
+
+                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.CommitAsync();
+                return Unit.Value;
             }
-
-            return user;
+            catch
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
         }
     }
 }
-

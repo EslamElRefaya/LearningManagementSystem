@@ -1,46 +1,43 @@
-﻿using LearningManagementSystem.Application.DTOs.Users;
-using LearningManagementSystem.Application.Interfaces;
 using LearningManagementSystem.Domain.Interfaces.Repositories;
 using LearningManagementSystem.Infrastructure.Identity;
-using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace LearningManagementSystem.Application.Features_CQRS.Users.Commands.DeleteUser
 {
-    public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand,Unit>
+    public class DeleteUserHandler : IRequestHandler<DeleteUserCommand, Unit>
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public DeleteUserCommandHandler(IUserRepository userRepository,UserManager<ApplicationUser> userManager)
+        public DeleteUserHandler(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
         {
-            _userRepository = userRepository;
             _userManager = userManager;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Unit> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetDomainUserById(request.UserId)
-                       ?? throw new Exception("User not found");
+            await _unitOfWork.BeginTransactionAsync();
 
-            // 1️⃣ Delete Identity User
-            var appUser = await _userManager.Users
-                .FirstOrDefaultAsync(x => x.UserId == user.Id);
-
-            if (appUser != null)
+            try
             {
-                var result = await _userManager.DeleteAsync(appUser);
-                if (!result.Succeeded)
-                    throw new Exception(string.Join(", ",
-                        result.Errors.Select(e => e.Description)));
+                var user = await _unitOfWork.Users.GetUserById(request.UserId)
+                    ?? throw new KeyNotFoundException("User not found");
+
+                user.SoftDelete();
+                await _unitOfWork.Users.SoftDeleteUserAsync(user);
+
+                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.CommitAsync();
+
+                return Unit.Value;
             }
-
-            // 2️⃣ Delete Domain User
-            await _userRepository.DeleteUserAsync(user.Id);
-
-            return Unit.Value;
+            catch
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
         }
 
     }

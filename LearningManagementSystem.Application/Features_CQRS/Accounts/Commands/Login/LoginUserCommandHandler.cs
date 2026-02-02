@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LearningManagementSystem.Application.Interfaces;
+using LearningManagementSystem.Domain.Interfaces;
 using LearningManagementSystem.Infrastructure.Authentication;
 using MediatR;
 
-namespace LearningManagementSystem.Application.Features_CQRS.Users.Commands.Login
+namespace LearningManagementSystem.Application.Features_CQRS.Accounts.Commands.Login
 {
 
     public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, string>
@@ -27,7 +22,7 @@ namespace LearningManagementSystem.Application.Features_CQRS.Users.Commands.Logi
             // 1 check username and password
             bool valid = await _userRepository.CheckPasswordAsync(request.UserName, request.Password);
             if (!valid)
-                throw new Exception("Invalid username or password");
+                throw new ArgumentException("Invalid username or password");
 
             // 2 generate JWT token
             var token = await _jwtService.GenerateToken(request.UserName);

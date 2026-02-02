@@ -8,4 +8,4 @@ public record CreateUserCommand
     string UserName,
     string Password,
     string Phone
-) : IRequest<User>;
+) : IRequest<Guid>;

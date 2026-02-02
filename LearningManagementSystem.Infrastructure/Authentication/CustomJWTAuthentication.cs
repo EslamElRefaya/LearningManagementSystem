@@ -10,7 +10,7 @@ namespace LearningManagementSystem.Infrastructure.Authentication
     public static class CustomJWTAuthentication
     {
         //this is Extension Method
-        public static void AddJWTAuthentication(this IServiceCollection services, ConfigurationManager configuration)
+        public static void AddJWTAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentication(option =>
             {

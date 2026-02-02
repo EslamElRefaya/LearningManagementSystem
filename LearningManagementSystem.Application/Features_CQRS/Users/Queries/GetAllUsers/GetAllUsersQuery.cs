@@ -1,9 +1,9 @@
 using LearningManagementSystem.Application.DTOs.Users;
 using MediatR;
 
-namespace LearningManagementSystem.Application.Features_CQRS.Users.Queries.GetAllUsers
+namespace LearningManagementSystem.Application.Features.Users.Queries.GetAllUsers
 {
-    public class GetAllUsersQuery : IRequest<IEnumerable<DetailsUserDto>>
+    public class GetAllUsersQuery : IRequest<List<DetailsUserDto>>
     {
     }
 }

@@ -2,7 +2,6 @@ using LearningManagementSystem.Domain.Entities;
 using LearningManagementSystem.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
 namespace LearningManagementSystem.Infrastructure.Persistence
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -25,8 +24,6 @@ namespace LearningManagementSystem.Infrastructure.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-
             modelBuilder.Entity<Course>(b =>
             {
                 b.OwnsOne(c => c.CoursePrice, price =>

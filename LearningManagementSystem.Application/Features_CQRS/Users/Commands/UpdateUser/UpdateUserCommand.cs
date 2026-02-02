@@ -1,13 +1,10 @@
-using LearningManagementSystem.Domain.Entities;
+using LearningManagementSystem.Application.DTOs.Users;
 using MediatR;
 
 namespace LearningManagementSystem.Application.Features_CQRS.Users.Commands.UpdateUser
 {
     public record UpdateUserCommand(
       Guid UserId,        // Id from Tb User
-      string FullName,
-      string UserName,
-      string Email,
-      string PhoneNumber
-  ) : IRequest<User>;
+      CreateUpdateUserDto updateUserDto
+  ) : IRequest<Unit>;
 }
