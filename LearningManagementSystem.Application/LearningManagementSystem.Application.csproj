@@ -10,13 +10,14 @@
     <Folder Include="Features_CQRS\Users\Queries\GetUserByRole\" />
     <Folder Include="Validators\" />
     <Folder Include="Validators\" />
-    <Folder Include="Interfaces\Services\" />
-    <Folder Include="Interfaces\Identity\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="Mapster.DependencyInjection" Version="10.0.0-pre01" />
     <PackageReference Include="MediatR" Version="14.0.0" />
+    <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>

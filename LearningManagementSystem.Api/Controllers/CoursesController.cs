@@ -19,13 +19,13 @@ namespace LearningManagementSystem.Api.Controllers
         }
         [Authorize(Roles = "Student")]
         [HttpGet]
-        public async Task<IActionResult> GetAllCoursesAsync()
+        public async Task<IActionResult> GetAllAsync()
         {
             var courses=await _mediator.Send(new GetAllCourseQuery());
             return Ok(courses);
         }
         [HttpGet("{courseid}")]
-        public async Task<IActionResult> GetAllCoursesAsync(Guid courseid)
+        public async Task<IActionResult> GetByAsync(Guid courseid)
         {
             var courses = await _mediator.Send(new GetCourseByIdQuery(courseid));
             if (courses == null)
@@ -34,13 +34,13 @@ namespace LearningManagementSystem.Api.Controllers
         }
         // POST: api/Courses
         [HttpPost]
-        public async Task<IActionResult> CreateCourseAsync([FromBody] CreateCourseDto createCourseDto)
+        public async Task<IActionResult> CreateAsync([FromBody] CreateCourseCommand createCourseCommand)
         {
-            var courseId = await _mediator.Send(createCourseDto);
+            var courseId = await _mediator.Send(createCourseCommand);
             return Ok(courseId);
         }
         [HttpPut("{courseId}")]
-        public async Task<IActionResult> UpdateCourseAsync(Guid courseId, [FromBody] UpdateCourseDto updateCourseDto)
+        public async Task<IActionResult> UpdateAsync(Guid courseId, [FromBody] UpdateCourseDto updateCourseDto)
         {
             var updateCourseCommand = new UpdateCourseCommand
             (
@@ -63,7 +63,7 @@ namespace LearningManagementSystem.Api.Controllers
         }
 
         [HttpDelete("{courseId}")]
-        public async Task<IActionResult> DeleteCourseAsync(Guid courseId)
+        public async Task<IActionResult> DeleteAsync(Guid courseId)
         {
             try
             {

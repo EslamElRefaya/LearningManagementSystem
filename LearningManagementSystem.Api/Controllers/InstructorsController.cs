@@ -1,3 +1,4 @@
+using Azure.Core;
 using LearningManagementSystem.Application.DTOs.Instractors;
 using LearningManagementSystem.Application.Features_CQRS.Instractors.Commands.CreateInstractor;
 using LearningManagementSystem.Application.Features_CQRS.Instractors.Commands.DeleteInstractor;
@@ -6,13 +7,11 @@ using LearningManagementSystem.Application.Features_CQRS.Instractors.Queries.Get
 using LearningManagementSystem.Application.Features_CQRS.Instractors.Queries.GetInstractorById;
 using LearningManagementSystem.Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearningManagementSystem.Api.Controllers
 {
-    [Authorize(Roles = "Admin")]
+   // [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class InstructorsController : ControllerBase
@@ -25,7 +24,7 @@ namespace LearningManagementSystem.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllInstractorsAsync()
+        public async Task<IActionResult> GetAllAsync()
         {
            var instractors= await _mediator.Send(new GetAllInstractorQuery());
             if (instractors == null)
@@ -33,54 +32,36 @@ namespace LearningManagementSystem.Api.Controllers
             return Ok(instractors);
         }
         [HttpGet("{instractorId}")]
-        public async Task<IActionResult> GetInstractorByInstractorIdAsync(Guid instractorId)
+        public async Task<IActionResult> GetByIdAsync(Guid instractorId)
         {
-            try
-            {
-                var instractor = await _mediator.Send(new GetInstractorByIdQuery(instractorId));
-                return Ok(instractor);
-            }catch (Exception ex)
-            {
-                return NotFound("no data founded");
-            }
+               var instractor = await _mediator.Send(new GetInstractorByIdQuery(instractorId));
+            if (instractor == null)
+                throw new KeyNotFoundException("instractor is not found");
+
+            return Ok(instractor);
+           
         }
         [HttpPost]
-        public async Task<IActionResult> AddInstractorAsync([FromBody] CreateAndUpdateInstractorDto createAndUpdateInstractorDto)
+        public async Task<IActionResult> AddAsync([FromBody] CreateAndUpdateInstractorDto createAndUpdateInstractorDto)
         {
+            if (createAndUpdateInstractorDto == null)
+                throw new ArgumentException("instractor is  requierd");
             var id = await _mediator.Send(new CreateInstractorCommand(createAndUpdateInstractorDto));
             return Ok(id);
         }
         [HttpPut("{instractorId}")]
-        public async Task<IActionResult> UpdateInstractorAsync(Guid instractorId, [FromBody] CreateAndUpdateInstractorDto createAndUpdateInstractorDto)
+        public async Task<IActionResult> UpdateAsync(Guid instractorId, [FromBody] CreateAndUpdateInstractorDto createAndUpdateInstractorDto)
         {
-
-            if (createAndUpdateInstractorDto == null)
-                return BadRequest("Instractor is Requierd!");
-            try
-            {
-                var command = new UpdateInstractorCommand(instractorId, createAndUpdateInstractorDto);
+             var command = new UpdateInstractorCommand(instractorId, createAndUpdateInstractorDto);
                 await _mediator.Send(command);
-                return Ok("The Update is Successs");
-
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+                return Ok("The Update is Successs"); 
         }
 
         [HttpDelete("{instractorId}")]
-        public async Task<IActionResult> DeleteInstractorAsync(Guid instractorId)
+        public async Task<IActionResult> DeleteAsync(Guid instractorId)
         {
-            try
-            {
                 await _mediator.Send(new DeleteInstractorCommand(instractorId));
-                return Ok("Delete is Success!");
-            }catch(KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-           
+                return Ok("Delete is Success!");   
         }
 
     }

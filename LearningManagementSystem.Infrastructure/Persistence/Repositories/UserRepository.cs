@@ -1,5 +1,5 @@
-﻿using LearningManagementSystem.Application.Interfaces;
-using LearningManagementSystem.Domain.Entities;
+﻿using LearningManagementSystem.Domain.Entities;
+using LearningManagementSystem.Domain.Interfaces;
 using LearningManagementSystem.Infrastructure.Identity;
 using LearningManagementSystem.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
@@ -15,6 +15,19 @@ public class UserRepository : IUserRepository
     {
         _userManager = userManager;
         _context = context;
+    }
+    public async Task<List<User>> GetAllUsersAsync()
+    {
+        return await _context.Users
+            .AsNoTracking()
+            .Where(u => !u.IsDeleted)
+            .ToListAsync();
+    }
+    public async Task<User?> GetUserById(Guid id)
+    {
+        return await _context.Users
+           .AsNoTracking()
+           .SingleOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
     }
 
     // Registration
@@ -41,27 +54,62 @@ public class UserRepository : IUserRepository
 
         return domainUser;
     }
-    public async Task<User?> GetDomainUserById(Guid id)
-    {
-        return await _context.Users
-            .AsNoTracking()
-            .SingleOrDefaultAsync(u => u.Id == id);
-    }
 
-    public async Task UpdateUserAsync(User user)
+    public async Task UpdateUserAsync(Guid userId, string? fullName, string? email, string? userName, string? password, string? phone, string? role)
     {
+        // 1️ Domain User
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == userId && !u.IsDeleted);
+
+        if (user is null) throw new KeyNotFoundException("User not found");
+
+        if (!string.IsNullOrEmpty(fullName)) user.FullName = fullName;
+
         _context.Users.Update(user);
-        await _context.SaveChangesAsync();
-    }
-    public async Task DeleteUserAsync(Guid id)
-    {
-        var user = await GetDomainUserById(id);
-        if (user == null)
-            return;
 
-        _context.Users.Remove(user);
-        await _context.SaveChangesAsync();
+        // 2️ Identity User
+        var applicationUser = await _userManager.Users
+            .FirstOrDefaultAsync(u => u.UserId == userId);
+
+        if (applicationUser is null) throw new KeyNotFoundException("Identity user not found");
+
+        if (!string.IsNullOrEmpty(userName)) applicationUser.UserName = userName;
+        if (!string.IsNullOrEmpty(email)) applicationUser.Email = email;
+        if (!string.IsNullOrEmpty(phone)) applicationUser.PhoneNumber = phone;
+
+        var updateResult = await _userManager.UpdateAsync(applicationUser);
+        if (!updateResult.Succeeded)
+            throw new ArgumentException($"Failed to update identity user: {string.Join(", ", updateResult.Errors.Select(e => e.Description))}");
+
+        // 3️ Password
+        if (!string.IsNullOrEmpty(password))
+        {
+            var token = await _userManager.GeneratePasswordResetTokenAsync(applicationUser);
+            var resetResult = await _userManager.ResetPasswordAsync(applicationUser, token, password);
+            if (!resetResult.Succeeded)
+                throw new InvalidOperationException($"Failed to reset password: {string.Join(", ", resetResult.Errors.Select(e => e.Description))}");
+        }
+
+        // 4️ Role
+        if (!string.IsNullOrEmpty(role))
+        {
+            var currentRoles = await _userManager.GetRolesAsync(applicationUser);
+            if (!currentRoles.Contains(role))
+            {
+                await _userManager.RemoveFromRolesAsync(applicationUser, currentRoles);
+                await _userManager.AddToRoleAsync(applicationUser, role);
+            }
+        }
     }
+
+    public async Task SoftDeleteUserAsync(User user)
+    {
+        user.SoftDelete();          //  Business Logic
+        _context.Users.Update(user); // Update not Remove
+        await Task.CompletedTask;
+    }
+
+
 
     //update on roles
     public async Task<IEnumerable<string>> AddAndUpdateRolesAsync(string userName, string role)

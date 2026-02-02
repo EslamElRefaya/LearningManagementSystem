@@ -1,9 +1,7 @@
 using LearningManagementSystem.Application.DTOs.Users;
+using LearningManagementSystem.Application.Features.Users.Queries.GetAllUsers;
 using LearningManagementSystem.Application.Features_CQRS.Users.Commands.DeleteUser;
-using LearningManagementSystem.Application.Features_CQRS.Users.Commands.Login;
 using LearningManagementSystem.Application.Features_CQRS.Users.Commands.UpdateUser;
-using LearningManagementSystem.Application.Features_CQRS.Users.Queries.GetAllUsers;
-using LearningManagementSystem.Application.Features_CQRS.Users.Queries.GetUserById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,30 +16,25 @@ namespace LearningManagementSystem.Api.Controllers
         {
             _mediator = mediator;
         }
-
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(CreateUserCommand createUserCommand)
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers()
         {
-            var user = await _mediator.Send(createUserCommand);
-            return Ok(user);
+            var result = await _mediator.Send(new GetAllUsersQuery());
+            return Ok(result);
         }
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginUserCommand command)
+        [HttpPost]
+        public async Task<IActionResult> CreateAsync(CreateUserCommand createUserCommand)
         {
-            var token = await _mediator.Send(command);
-            return Ok(new { token });
+            var userId= await _mediator.Send(createUserCommand);
+            return Ok(userId);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, UpdateUserCommand command)
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] CreateUpdateUserDto dto)
         {
-            if (id != command.UserId)
-                return BadRequest("Id mismatch");
-
-            var result = await _mediator.Send(command);
-            return Ok(result);
+            await _mediator.Send(new UpdateUserCommand(id, dto));
+            return Ok("Update is successed");
         }
-
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {

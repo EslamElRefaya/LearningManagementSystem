@@ -1,12 +1,40 @@
-using LearningManagementSystem.Application.Interfaces;
-using LearningManagementSystem.Domain.Entities;
+using LearningManagementSystem.Domain.Interfaces.Repositories;
 using MediatR;
-
-public class CreateUserHandler : IRequestHandler<CreateUserCommand, User>
+namespace LearningManagementSystem.Application.Features_CQRS.Users.Commands.CreateUser
 {
-    private readonly IUserRepository _userRepository;
-    public CreateUserHandler(IUserRepository service) => _userRepository = service;
+    public class CreateUserHandler : IRequestHandler<CreateUserCommand, Guid>
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        public CreateUserHandler(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
 
-    public async Task<User> Handle(CreateUserCommand r, CancellationToken _)
-        => await _userRepository.CreateUserAsync(r.FullName, r.Email, r.UserName, r.Password, r.Phone);
+
+        public async Task<Guid> Handle(CreateUserCommand request,CancellationToken cancellationToken)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+
+            try
+            {
+                var user = await _unitOfWork.Users.CreateUserAsync(
+                    request.FullName,
+                    request.Email,
+                    request.UserName,
+                    request.Password,
+                    request.Phone);
+
+                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.CommitAsync();
+
+                return user.Id;
+            }
+            catch
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
+        }
+    }
 }
+

@@ -1,5 +1,5 @@
 using MediatR;
-namespace LearningManagementSystem.Application.Features_CQRS.Users.Commands.Login
+namespace LearningManagementSystem.Application.Features_CQRS.Accounts.Commands.Login
 {
     public record LoginUserCommand(
      string UserName,

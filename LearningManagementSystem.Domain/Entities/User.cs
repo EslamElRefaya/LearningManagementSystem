@@ -6,10 +6,15 @@ namespace LearningManagementSystem.Domain.Entities
     {
         [MaxLength(200)]
         public string FullName { get; set; } = string.Empty;
-      
+        public bool IsDeleted { get; private set; }
 
         public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
         public ICollection<Submission> Submissions { get; set; } = new List<Submission>();
-       
+
+        public void SoftDelete()
+        {
+            IsDeleted = true;
+        }
+
     }
 }
