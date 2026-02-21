@@ -39,6 +39,7 @@ namespace LearningManagementSystem.Infrastructure.DependencyInjection
             services.AddScoped<ICourseRepository, CourseRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IInstractorRepository, InstractorRepository>();
+            services.AddScoped<ILessonRepository, LessonRepository>();
             #endregion
 
             #region UnitOfWork

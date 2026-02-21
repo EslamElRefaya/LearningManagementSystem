@@ -234,7 +234,7 @@ namespace LearningManagementSystem.Infrastructure.Migrations
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("LeassonType")
+                    b.Property<int>("LessonType")
                         .HasColumnType("int");
 
                     b.Property<int>("Order")

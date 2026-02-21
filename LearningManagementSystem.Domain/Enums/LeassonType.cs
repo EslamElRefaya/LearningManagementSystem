@@ -1,6 +1,6 @@
 namespace LearningManagementSystem.Domain.Enums
 {
-    public enum LeassonType
+    public enum LessonType
     {
         Video = 1,     
         Text = 2,      
