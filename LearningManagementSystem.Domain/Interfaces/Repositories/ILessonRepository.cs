@@ -5,7 +5,7 @@ namespace LearningManagementSystem.Domain.Interfaces.Repositories
 {
    public interface ILessonRepository:IBaseRepository<Lesson>
     {
-        Task<Lesson?> GetLessonByCourseIdAsync(Guid courseId);
-        Task<IEnumerable<Lesson>> GetLessonsLeassonTypeAsync(LeassonType leassonType);
+        Task<IEnumerable<Lesson>> GetLessonByCourseIdAsync(Guid courseId);
+        Task<IEnumerable<Lesson>> GetLessByLessonTypeAsync(LessonType LessonType);
     }
 }

@@ -27,6 +27,7 @@ namespace LearningManagementSystem.Application.DependencyInjection
             CourseMapping.Register();
             InstractorMapping.Register();
             UserMapping.Register();
+            LessonMapping.Register();
 
             // FluentValidation (Validators)
             services.AddValidatorsFromAssembly(typeof(ApplicationServiceRegistration).Assembly);
